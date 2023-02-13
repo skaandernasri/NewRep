@@ -1,0 +1,170 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pidev.entities;
+
+/**
+ *
+ * @author skann
+ */
+public class User {
+
+    private int id;
+    
+    private String nom;
+    private String prenom;
+    private String cin;
+    private String date_naiss;
+    private String photo_personel;
+    private String photo_permis;
+    private String num_permis;
+    private String ville;
+    private String num_tel;
+    private Role role;
+    private String login;
+    private String password;
+    public User(String nom, String prenom, String cin, String date_naiss, String photo_personel, String photo_permis, String num_permis, String ville, String num_tel, Role role, String login, String password) {
+        
+        this.nom = nom;
+        this.prenom = prenom;
+        this.cin = cin;
+        this.date_naiss = date_naiss;
+        this.photo_personel = photo_personel;
+        this.photo_permis = photo_permis;
+        this.num_permis = num_permis;
+        this.ville = ville;
+        this.num_tel = num_tel;
+        this.role = role;
+        this.login = login;
+        this.password = password;
+    }
+
+   
+
+    public User() {
+    }
+
+    public User(String login, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+  
+  
+    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getCin() {
+        return cin;
+    }
+
+    public void setCin(String cin) {
+        this.cin = cin;
+    }
+
+    public String getDate_naiss() {
+        return date_naiss;
+    }
+
+    public void setDate_naiss(String date_naiss) {
+        this.date_naiss = date_naiss;
+    }
+
+    public String getPhoto_personel() {
+        return photo_personel;
+    }
+
+    public void setPhoto_personel(String photo_personel) {
+        this.photo_personel = photo_personel;
+    }
+
+    public String getPhoto_permis() {
+        return photo_permis;
+    }
+
+    public void setPhoto_permis(String photo_permis) {
+        this.photo_permis = photo_permis;
+    }
+
+    public String getNum_permis() {
+        return num_permis;
+    }
+
+    public void setNum_permis(String num_permis) {
+        this.num_permis = num_permis;
+    }
+
+    public String getVille() {
+        return ville;
+    }
+
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+
+    public String getNum_tel() {
+        return num_tel;
+    }
+
+    public void setNum_tel(String num_tel) {
+        this.num_tel = num_tel;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", cin=" + cin + ", date_naiss=" + date_naiss + ", photo_personel=" + photo_personel + ", photo_permis=" + photo_permis + ", num_permis=" + num_permis + ", ville=" + ville + ", num_tel=" + num_tel + ", role=" + role + ", login=" + login + ", password=" + password + '}';
+    }
+
+   
+
+    
+    
+}
