@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface InterfaceCRUD<T> {
      public void ajouterUtilisateur(T t);
+     public void supprimerUtilisateur(T t);
+     public void modifierUtilisateur(T t);
      public boolean LogindejaUtilise(T t);
      public boolean CindejaUtilise(T t);
      public boolean num_permidejaUtilise(T t);

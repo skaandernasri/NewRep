@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -112,12 +114,15 @@ public class SignupController implements Initializable {
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
                 || tflogin.getText().isEmpty() || pfpassword.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "il reste des champs vide!");
+            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vide!");
         } else if (user.getPhoto_permis().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "vous devez enregistrez une photo de votre permis!");
+            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo de votre permis!");
         } else if (user.getPhoto_personel().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "vous devez enregistrez une photo personnelle!");
-        } else // if(tfnom!=""&&)
+            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
+        }
+            else if (!(validateEmail(tflogin)))
+                showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "La format de login est incorrect!");
+         else // if(tfnom!=""&&)
         {
             user.setNom(tfnom.getText());
         }
@@ -133,11 +138,11 @@ public class SignupController implements Initializable {
         user.setPassword(pfpassword.getText());
         UserCRUD uc = new UserCRUD();
         if (uc.LogindejaUtilise(user)) {
-            infoBox("Login deja utilisé", null, "Failed");
+            infoBox("Login deja utilisé", null, "Echec");
         } else if (uc.CindejaUtilise(user)) {
-            infoBox("Cin déja utilisé", null, "Failed");
+            infoBox("Cin déja utilisé", null, "Echec");
         } else if (uc.num_permidejaUtilise(user)) {
-            infoBox("numéro de permis déja utilisé", null, "Failed");
+            infoBox("numéro de permis déja utilisé", null, "Echec");
         } else {
             uc.ajouterUtilisateur(user);
             infoBox("Utilisateur ajouté avec succé", null, "succé");
@@ -145,6 +150,11 @@ public class SignupController implements Initializable {
         }
         
 
+    }
+    public boolean validateEmail(TextField email){
+        Pattern pattern = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+    Matcher matcher = pattern.matcher(email.getText());
+    return matcher.matches();
     }
      public void start(Stage secondaryStage) {
       try {

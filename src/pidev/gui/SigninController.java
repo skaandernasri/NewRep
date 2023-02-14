@@ -37,8 +37,8 @@ public class SigninController implements Initializable {
                   user.setLogin(tflogin.getText());
                   user.setPassword(pfpassword.getText());
                   UserCRUD uc = new UserCRUD();
-        if (uc.authentifier(user))
-            currentUser = new User(user.getLogin(), user.getPassword());
+        if (uc.authentifier(user));
+         //   currentUser = new User(user.getLogin(), user.getPassword());
         }
     
 }

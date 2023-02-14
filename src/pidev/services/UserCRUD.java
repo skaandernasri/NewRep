@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,17 +53,66 @@ public class UserCRUD implements InterfaceCRUD<User> {
     }
 
     @Override
-    public List<User> listeDesUtilisateurs() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void supprimerUtilisateur(User t) {
+        try {
+            String requete = "DELETE from user where  login= " + "'" + t.getLogin() + "'";
+            Statement pst = Connexion.getInstance().getCnx().createStatement();
+            pst.executeUpdate(requete);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
+
+    @Override
+    public void modifierUtilisateur(User t) {
+        try {
+            String requete = "UPDATE user SET  login= " + "'" + t.getLogin() + "'"
+                    + "passowrd=" + "'" + t.getPassword() + "'"
+                    + "num_tel" + "'" + t.getNum_tel() + "'"
+                    + "nom" + "'" + t.getNom() + "'"
+                    + "prenom" + "'" + t.getPrenom() + "'"
+                    + "ville" + "'" + t.getVille() + "'";
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            st.executeUpdate(requete);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<User> listeDesUtilisateurs() {
+   List<User> myList=new ArrayList<>();
+        String requete="SELECT id,nom,prenom,cin,date_naissance,num_permis,ville,num_tel,login FROM user where role = "+"'"+"client"+"'";
+        try {
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+          ResultSet rs=  st.executeQuery(requete);
+          while(rs.next()){
+              User u = new User();
+              u.setId(rs.getInt(1));
+              u.setNom(rs.getNString(2));
+              u.setPrenom(rs.getNString(3));
+              u.setCin(rs.getNString(4));
+              u.setDate_naiss(rs.getNString(5));
+              u.setNum_permis(rs.getNString(6));
+              u.setVille(rs.getNString(7));
+              u.setNum_tel(rs.getNString(8));
+              u.setLogin(rs.getNString(9));
+              myList.add(u);
+          }
+         
+          
+        }catch (SQLException ex) {     
+            System.out.println(ex.getMessage());
+        }
+        return myList;    }
 
     @Override
     public boolean LogindejaUtilise(User t) {
         boolean test = false;
         try {
             String requete = "SELECT * from user where login = " + "'" + t.getLogin() + "'";
-            Statement pst = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs = pst.executeQuery(requete);
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery(requete);
             test = rs.next();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -75,8 +125,8 @@ public class UserCRUD implements InterfaceCRUD<User> {
         boolean test = false;
         try {
             String requete = "SELECT * from user where cin = " + "'" + t.getCin() + "'";
-            Statement pst = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs = pst.executeQuery(requete);
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery(requete);
             test = rs.next();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -89,8 +139,8 @@ public class UserCRUD implements InterfaceCRUD<User> {
         boolean test = false;
         try {
             String requete = "SELECT * from user where num_permis = " + "'" + t.getNum_permis() + "'";
-            Statement pst = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs = pst.executeQuery(requete);
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery(requete);
             test = rs.next();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -104,8 +154,8 @@ public class UserCRUD implements InterfaceCRUD<User> {
         try {
 
             String requete = "SELECT * from user where login = " + "'" + t.getLogin() + "' and password = " + "'" + t.getPassword() + "'";
-            Statement pst = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs = pst.executeQuery(requete);
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery(requete);
             test = rs.next();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
