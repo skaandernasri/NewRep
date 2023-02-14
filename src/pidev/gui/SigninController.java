@@ -34,7 +34,7 @@ public class SigninController implements Initializable {
     }    
         private void Signin(ActionEvent event) {
             User user = new User();
-                  user.setLogin(tflogin.getText());
+                  user.setEmail(tflogin.getText());
                   user.setPassword(pfpassword.getText());
                   UserCRUD uc = new UserCRUD();
         if (uc.authentifier(user));

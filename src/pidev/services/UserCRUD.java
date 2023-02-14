@@ -29,7 +29,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
 
         try {
 
-            String requete = "INSERT INTO user(nom,prenom,cin,date_naissance,photo_personel,photo_permis,num_permis,ville,num_tel,role,login,password)"
+            String requete = "INSERT INTO user(nom,prenom,cin,date_naissance,photo_personel,photo_permis,num_permis,ville,num_tel,role,email,password)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement pst = Connexion.getInstance().getCnx().prepareStatement(requete);
@@ -43,7 +43,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
             pst.setString(8, u.getVille());
             pst.setString(9, u.getNum_tel());
             pst.setString(10, u.getRole().getRole());
-            pst.setString(11, u.getLogin());
+            pst.setString(11, u.getEmail());
             pst.setString(12, u.getPassword());
             pst.executeUpdate();
             System.out.println("Done!");
@@ -55,18 +55,24 @@ public class UserCRUD implements InterfaceCRUD<User> {
     @Override
     public void supprimerUtilisateur(User t) {
         try {
-            String requete = "DELETE from user where  login= " + "'" + t.getLogin() + "'";
+            String requete="SELECT id from user where email="+ "'" + t.getEmail() + "'";
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery(requete);
+            if(rs.next()){
+            String requete1 = "DELETE from user where  id= " + "'" + rs.getInt(1) + "'";
             Statement pst = Connexion.getInstance().getCnx().createStatement();
             pst.executeUpdate(requete);
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(UserCRUD.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
     @Override
     public void modifierUtilisateur(User t) {
         try {
-            String requete = "UPDATE user SET  login= " + "'" + t.getLogin() + "'"
+            String requete = "UPDATE user SET  email= " + "'" + t.getEmail() + "'"
                     + "passowrd=" + "'" + t.getPassword() + "'"
                     + "num_tel" + "'" + t.getNum_tel() + "'"
                     + "nom" + "'" + t.getNom() + "'"
@@ -80,9 +86,9 @@ public class UserCRUD implements InterfaceCRUD<User> {
     }
 
     @Override
-    public List<User> listeDesUtilisateurs() {
+    public List<User> consulterListe() {
    List<User> myList=new ArrayList<>();
-        String requete="SELECT id,nom,prenom,cin,date_naissance,num_permis,ville,num_tel,login FROM user where role = "+"'"+"client"+"'";
+        String requete="SELECT id,nom,prenom,cin,date_naissance,num_permis,ville,num_tel,email FROM user where role = "+"'"+"client"+"'";
         try {
             Statement st = Connexion.getInstance().getCnx().createStatement();
           ResultSet rs=  st.executeQuery(requete);
@@ -96,7 +102,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
               u.setNum_permis(rs.getNString(6));
               u.setVille(rs.getNString(7));
               u.setNum_tel(rs.getNString(8));
-              u.setLogin(rs.getNString(9));
+              u.setEmail(rs.getNString(9));
               myList.add(u);
           }
          
@@ -107,10 +113,10 @@ public class UserCRUD implements InterfaceCRUD<User> {
         return myList;    }
 
     @Override
-    public boolean LogindejaUtilise(User t) {
+    public boolean emaildejaUtilise(User t) {
         boolean test = false;
         try {
-            String requete = "SELECT * from user where login = " + "'" + t.getLogin() + "'";
+            String requete = "SELECT * from user where email = " + "'" + t.getEmail() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -153,7 +159,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
         boolean test = false;
         try {
 
-            String requete = "SELECT * from user where login = " + "'" + t.getLogin() + "' and password = " + "'" + t.getPassword() + "'";
+            String requete = "SELECT * from user where email = " + "'" + t.getEmail() + "' and password = " + "'" + t.getPassword() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -161,6 +167,30 @@ public class UserCRUD implements InterfaceCRUD<User> {
             System.out.println(ex.getMessage());
         }
         return test;
+    }
+
+    @Override
+    public User getUserByEmail(User t) {
+        User u = new User();
+        try {
+            String requete="SELECT id,nom,prenom,cin,num_permis,ville,num_tel,email FROM user where email = " + "'" + t.getEmail() + "'";
+            Statement st = Connexion.getInstance().getCnx().createStatement();
+            ResultSet rs=  st.executeQuery(requete);
+            while(rs.next()){
+                u.setId(rs.getInt(1));
+                u.setNom(rs.getNString(2));
+                u.setPrenom(rs.getNString(3));
+                u.setCin(rs.getNString(4));
+                u.setNum_permis(rs.getNString(5));
+                u.setVille(rs.getNString(6));
+                u.setNum_tel(rs.getNString(7));
+                u.setEmail(rs.getNString(8));
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserCRUD.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return u;
     }
 
 }

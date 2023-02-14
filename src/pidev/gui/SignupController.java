@@ -43,7 +43,7 @@ public class SignupController implements Initializable {
     @FXML
     private TextField tfprenom;
     @FXML
-    private TextField tflogin;
+    private TextField tfemail;
     @FXML
     private PasswordField pfpassword;
     @FXML
@@ -64,6 +64,7 @@ public class SignupController implements Initializable {
     private Button btnsignup;
     User user = new User();
     private User currentUser;
+    Stage secondaryStage=new Stage();
     /**
      * Initializes the controller class.
      */
@@ -110,35 +111,35 @@ public class SignupController implements Initializable {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Le numéro de téléphone doit composé des chiffres seulement!");
         } else if (tfcin.getText().isEmpty() || tfnom.getText().isEmpty()
-                || tfprenom.getText().isEmpty() || tflogin.getText().isEmpty()
+                || tfprenom.getText().isEmpty() || tfemail.getText().isEmpty()
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
-                || tflogin.getText().isEmpty() || pfpassword.getText().isEmpty()) {
+                || tfemail.getText().isEmpty() || pfpassword.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vide!");
         } else if (user.getPhoto_permis().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo de votre permis!");
         } else if (user.getPhoto_personel().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
         }
-            else if (!(validateEmail(tflogin)))
+            else if (!(validateEmail(tfemail)))
                 showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "La format de login est incorrect!");
          else // if(tfnom!=""&&)
         {
             user.setNom(tfnom.getText());
         }
         user.setPrenom(tfprenom.getText());
-        user.setLogin(tflogin.getText());
+        user.setEmail(tfemail.getText());
         user.setCin(tfcin.getText());
         user.setDate_naiss(date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         user.setNum_permis(tfnum_permi.getText());
         user.setVille(tfville.getText());
         user.setNum_tel(tfnum_tel.getText());
         user.setRole(new Role("client"));
-        user.setLogin(tflogin.getText());
+        user.setEmail(tfemail.getText());
         user.setPassword(pfpassword.getText());
         UserCRUD uc = new UserCRUD();
-        if (uc.LogindejaUtilise(user)) {
-            infoBox("Login deja utilisé", null, "Echec");
+        if (uc.emaildejaUtilise(user)) {
+            infoBox("Email deja utilisé", null, "Echec");
         } else if (uc.CindejaUtilise(user)) {
             infoBox("Cin déja utilisé", null, "Echec");
         } else if (uc.num_permidejaUtilise(user)) {
@@ -146,6 +147,7 @@ public class SignupController implements Initializable {
         } else {
             uc.ajouterUtilisateur(user);
             infoBox("Utilisateur ajouté avec succé", null, "succé");
+            connectWindow(secondaryStage);
             
         }
         
@@ -156,7 +158,7 @@ public class SignupController implements Initializable {
     Matcher matcher = pattern.matcher(email.getText());
     return matcher.matches();
     }
-     public void start(Stage secondaryStage) {
+     public void connectWindow(Stage secondaryStage) {
       try {
             Parent root = FXMLLoader.load(getClass().getResource("Signin.fxml"));
             Scene scene = new Scene(root);
@@ -169,11 +171,11 @@ System.out.println(ex.getMessage());
     }
      private void Signin(ActionEvent event) {
             User user = new User();
-                  user.setLogin(tflogin.getText());
+                  user.setEmail(tfemail.getText());
                   user.setPassword(pfpassword.getText());
                   UserCRUD uc = new UserCRUD();
         if (uc.authentifier(user))
-            currentUser = new User(user.getLogin(), user.getPassword());
+            currentUser = new User(user.getEmail(), user.getPassword());
         }
 
     public static void infoBox(String infoMessage, String headerText, String title) {
@@ -191,6 +193,9 @@ System.out.println(ex.getMessage());
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+    public User getCurrentUser(){
+        return this.currentUser;
     }
     
 

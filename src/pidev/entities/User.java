@@ -23,9 +23,9 @@ public class User {
     private String ville;
     private String num_tel;
     private Role role;
-    private String login;
+    private String email;
     private String password;
-    public User(String nom, String prenom, String cin, String date_naiss, String photo_personel, String photo_permis, String num_permis, String ville, String num_tel, Role role, String login, String password) {
+    public User(String nom, String prenom, String cin, String date_naiss, String photo_personel, String photo_permis, String num_permis, String ville, String num_tel, Role role, String email, String password) {
         
         this.nom = nom;
         this.prenom = prenom;
@@ -37,7 +37,7 @@ public class User {
         this.ville = ville;
         this.num_tel = num_tel;
         this.role = role;
-        this.login = login;
+        this.email = email;
         this.password = password;
     }
 
@@ -46,8 +46,7 @@ public class User {
     public User() {
     }
 
-    public User(String login, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User(String email, String password) {
     }
 
   
@@ -142,12 +141,12 @@ public class User {
         this.role = role;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -160,7 +159,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", cin=" + cin + ", date_naiss=" + date_naiss + ", photo_personel=" + photo_personel + ", photo_permis=" + photo_permis + ", num_permis=" + num_permis + ", ville=" + ville + ", num_tel=" + num_tel + ", role=" + role + ", login=" + login + ", password=" + password + '}';
+        return "User{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", cin=" + cin + ", date_naiss=" + date_naiss + ", photo_personel=" + photo_personel + ", photo_permis=" + photo_permis + ", num_permis=" + num_permis + ", ville=" + ville + ", num_tel=" + num_tel + ", role=" + role + ", email=" + email + ", password=" + password + '}';
     }
 
    

@@ -11,7 +11,7 @@
    <children>
       <Label layoutX="51.0" layoutY="22.0" text="nom" />
       <Label layoutX="43.0" layoutY="61.0" text="prenom" />
-      <Label layoutX="51.0" layoutY="100.0" text="login" />
+      <Label layoutX="51.0" layoutY="100.0" text="email" />
       <Label layoutX="57.0" layoutY="129.0" text="password" />
       <Label layoutX="53.0" layoutY="192.0" text="date_naissance" />
       <Label layoutX="63.0" layoutY="232.0" text="num_permi" />
@@ -29,6 +29,6 @@
       <TextField fx:id="tfcin" layoutX="201.0" layoutY="159.0" />
       <Label layoutX="75.0" layoutY="163.0" text="cin" />
       <PasswordField fx:id="pfpassword" layoutX="200.0" layoutY="125.0" />
-      <TextField fx:id="tflogin" layoutX="201.0" layoutY="96.0" />
+      <TextField fx:id="tfemail" layoutX="201.0" layoutY="96.0" />
    </children>
 </AnchorPane>
