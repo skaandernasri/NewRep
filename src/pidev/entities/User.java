@@ -5,6 +5,9 @@
  */
 package pidev.entities;
 
+
+import java.text.*;
+import java.util.Calendar;
 /**
  *
  * @author skann
@@ -49,6 +52,21 @@ public class User {
     public User(String email, String password) {
     }
 
+    public User(int id, String nom, String prenom, String cin, String date_naiss, String num_permis, String ville, String num_tel, String email) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.cin = cin;
+        this.date_naiss = date_naiss;
+        this.num_permis = num_permis;
+        this.ville = ville;
+        this.num_tel = num_tel;
+      
+        this.email = email;
+    }
+
+   
+
   
   
     
@@ -85,13 +103,7 @@ public class User {
         this.cin = cin;
     }
 
-    public String getDate_naiss() {
-        return date_naiss;
-    }
-
-    public void setDate_naiss(String date_naiss) {
-        this.date_naiss = date_naiss;
-    }
+ 
 
     public String getPhoto_personel() {
         return photo_personel;
@@ -156,7 +168,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
+public String getDate_naiss(){
+    return this.date_naiss;
+}
+public void setDate_naiss(String date_naiss){
+    this.date_naiss=date_naiss;
+}
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", cin=" + cin + ", date_naiss=" + date_naiss + ", photo_personel=" + photo_personel + ", photo_permis=" + photo_permis + ", num_permis=" + num_permis + ", ville=" + ville + ", num_tel=" + num_tel + ", role=" + role + ", email=" + email + ", password=" + password + '}';

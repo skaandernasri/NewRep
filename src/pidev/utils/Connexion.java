@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * @author skann
  */
 public class Connexion {
-      String url = "jdbc:mysql://localhost:3306/pidev";
+      String url = "jdbc:mysql://localhost:3306/swiftride";
     String login = "root";
     String pwd = "";
    private Connection cnx;

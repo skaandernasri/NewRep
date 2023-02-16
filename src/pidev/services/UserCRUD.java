@@ -5,16 +5,29 @@
  */
 package pidev.services;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import pidev.entities.Role;
 import pidev.entities.User;
+import pidev.gui.SignupController;
 import pidev.interfaces.InterfaceCRUD;
 import pidev.utils.Connexion;
 
@@ -29,7 +42,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
 
         try {
 
-            String requete = "INSERT INTO user(nom,prenom,cin,date_naissance,photo_personel,photo_permis,num_permis,ville,num_tel,role,email,password)"
+            String requete = "INSERT INTO user(nom,prenom,cin,date_naiss,num_permis,ville,num_tel,login,mdb,photo_personel,photo_permis,role)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement pst = Connexion.getInstance().getCnx().prepareStatement(requete);
@@ -42,7 +55,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
             pst.setString(7, u.getNum_permis());
             pst.setString(8, u.getVille());
             pst.setString(9, u.getNum_tel());
-            pst.setString(10, u.getRole().getRole());
+            pst.setString(10, u.getRole().toString());
             pst.setString(11, u.getEmail());
             pst.setString(12, u.getPassword());
             pst.executeUpdate();
@@ -55,25 +68,25 @@ public class UserCRUD implements InterfaceCRUD<User> {
     @Override
     public void supprimerUtilisateur(User t) {
         try {
-            String requete="SELECT id from user where email="+ "'" + t.getEmail() + "'";
+            String requete = "SELECT id from user where login=" + "'" + t.getEmail() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
-            if(rs.next()){
-            String requete1 = "DELETE from user where  id= " + "'" + rs.getInt(1) + "'";
-            Statement pst = Connexion.getInstance().getCnx().createStatement();
-            pst.executeUpdate(requete);
+            if (rs.next()) {
+                String requete1 = "DELETE from user where  id= " + "'" + rs.getInt(1) + "'";
+                Statement pst = Connexion.getInstance().getCnx().createStatement();
+                pst.executeUpdate(requete);
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserCRUD.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     @Override
     public void modifierUtilisateur(User t) {
         try {
-            String requete = "UPDATE user SET  email= " + "'" + t.getEmail() + "'"
-                    + "passowrd=" + "'" + t.getPassword() + "'"
+            String requete = "UPDATE user SET  login= " + "'" + t.getEmail() + "'"
+                    + "mdp=" + "'" + t.getPassword() + "'"
                     + "num_tel" + "'" + t.getNum_tel() + "'"
                     + "nom" + "'" + t.getNom() + "'"
                     + "prenom" + "'" + t.getPrenom() + "'"
@@ -87,36 +100,36 @@ public class UserCRUD implements InterfaceCRUD<User> {
 
     @Override
     public List<User> consulterListe() {
-   List<User> myList=new ArrayList<>();
-        String requete="SELECT id,nom,prenom,cin,date_naissance,num_permis,ville,num_tel,email FROM user where role = "+"'"+"client"+"'";
+        List<User> myList = new ArrayList<>();
+        String requete = "SELECT id,nom,prenom,cin,date_naiss,num_permis,ville,num_tel,login FROM user where role = " + "'" + "client" + "'";
         try {
             Statement st = Connexion.getInstance().getCnx().createStatement();
-          ResultSet rs=  st.executeQuery(requete);
-          while(rs.next()){
-              User u = new User();
-              u.setId(rs.getInt(1));
-              u.setNom(rs.getNString(2));
-              u.setPrenom(rs.getNString(3));
-              u.setCin(rs.getNString(4));
-              u.setDate_naiss(rs.getNString(5));
-              u.setNum_permis(rs.getNString(6));
-              u.setVille(rs.getNString(7));
-              u.setNum_tel(rs.getNString(8));
-              u.setEmail(rs.getNString(9));
-              myList.add(u);
-          }
-         
-          
-        }catch (SQLException ex) {     
+            ResultSet rs = st.executeQuery(requete);
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt(1));
+                u.setNom(rs.getNString(2));
+                u.setPrenom(rs.getNString(3));
+                u.setCin(rs.getNString(4));
+                u.setDate_naiss(rs.getNString(5));
+                u.setNum_permis(rs.getNString(6));
+                u.setVille(rs.getNString(7));
+                u.setNum_tel(rs.getNString(8));
+                u.setEmail(rs.getNString(9));
+                myList.add(u);
+            }
+
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        return myList;    }
+        return myList;
+    }
 
     @Override
     public boolean emaildejaUtilise(User t) {
         boolean test = false;
         try {
-            String requete = "SELECT * from user where email = " + "'" + t.getEmail() + "'";
+            String requete = "SELECT * from user where login = " + "'" + t.getEmail() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -159,7 +172,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
         boolean test = false;
         try {
 
-            String requete = "SELECT * from user where email = " + "'" + t.getEmail() + "' and password = " + "'" + t.getPassword() + "'";
+            String requete = "SELECT * from user where login = " + "'" + t.getEmail() + "' and mdp = " + "'" + t.getPassword() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -173,10 +186,10 @@ public class UserCRUD implements InterfaceCRUD<User> {
     public User getUserByEmail(User t) {
         User u = new User();
         try {
-            String requete="SELECT id,nom,prenom,cin,num_permis,ville,num_tel,email FROM user where email = " + "'" + t.getEmail() + "'";
+            String requete = "SELECT id,nom,prenom,cin,num_permis,ville,num_tel,login,role FROM user where login = " + "'" + t.getEmail() + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs=  st.executeQuery(requete);
-            while(rs.next()){
+            ResultSet rs = st.executeQuery(requete);
+            while (rs.next()) {
                 u.setId(rs.getInt(1));
                 u.setNom(rs.getNString(2));
                 u.setPrenom(rs.getNString(3));
@@ -185,12 +198,74 @@ public class UserCRUD implements InterfaceCRUD<User> {
                 u.setVille(rs.getNString(6));
                 u.setNum_tel(rs.getNString(7));
                 u.setEmail(rs.getNString(8));
-                
+                // u.setRole(rs.getObject(9, role));
+
             }
         } catch (SQLException ex) {
-            Logger.getLogger(UserCRUD.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         }
-         return u;
+        return u;
     }
+
+    @Override
+    public void uploadPhotoPersonnel(User t) throws IOException {
+        File dossierDest = new File("C:/Users/skann/OneDrive/Documents/NetBeansProjectsm/Pidev/UploadFileLocation/PhotoPersonnel");
+        JFileChooser image_upload = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
+        image_upload.setFileFilter(filter);
+        int res = image_upload.showSaveDialog(null);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            InputStream input = null;
+            OutputStream output = null;
+            try {
+                input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
+                File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
+                 output = Files.newOutputStream(imagedesination.toPath());
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                t.setPhoto_personel(imagedesination.toPath().toString());
+            } catch (FileNotFoundException ex) {
+                System.out.println(ex.getMessage());
+           
+            } 
+                    input.close();
+                                   output.close();
+
+            }
+        }
+    
+
+    @Override
+    public void uploadPhotoPermis(User t)  throws IOException {
+         File dossierDest = new File("C:/Users/skann/OneDrive/Documents/NetBeansProjectsm/Pidev/UploadFileLocation/PhotoPermis");
+        JFileChooser image_upload = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
+        image_upload.setFileFilter(filter);
+        int res = image_upload.showSaveDialog(null);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            InputStream input = null;
+            OutputStream output = null;
+            try {
+                input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
+                File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
+                 output = Files.newOutputStream(imagedesination.toPath());
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                t.setPhoto_permis(imagedesination.toPath().toString());
+            } catch (FileNotFoundException ex) {
+                System.out.println(ex.getMessage());
+           
+            } 
+                    input.close();
+                                   output.close();
+
+            }
+        }
 
 }

@@ -9,7 +9,7 @@ package pidev.main;
  *
  * @author skann
  */
-public class MainClass {
+public class MainClass  {
 
     /**
      * @param args the command line arguments

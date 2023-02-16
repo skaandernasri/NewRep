@@ -5,6 +5,7 @@
  */
 package pidev.interfaces;
 
+import java.io.IOException;
 import java.util.List;
 import pidev.entities.User;
 
@@ -19,7 +20,10 @@ public interface InterfaceCRUD<T> {
      public boolean emaildejaUtilise(T t);
      public boolean CindejaUtilise(T t);
      public boolean num_permidejaUtilise(T t);
+     public void uploadPhotoPersonnel(T t) throws IOException;
+     public void uploadPhotoPermis(T t) throws IOException;
      public boolean authentifier(T t);
     public List<T> consulterListe();
     public User getUserByEmail(T t);
+   
 }
