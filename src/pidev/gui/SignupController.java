@@ -56,6 +56,8 @@ public class SignupController implements Initializable {
     @FXML
     private TextField tfemail;
     @FXML
+    private TextField tfemailtoconnect;
+    @FXML
     private PasswordField pfpassword;
     @FXML
     private DatePicker date_naissance;
@@ -73,9 +75,13 @@ public class SignupController implements Initializable {
     private Button btnphoto_permi;
     @FXML
     private Button btnsignup;
+    @FXML
+    private Button btnsignin;
+    @FXML
+    private PasswordField pfpasswordtoconnect;
     User user = new User();
     private User currentUser;
-    Stage secondaryStage = new Stage();
+    Stage stage = new Stage();
 
     /**
      * Initializes the controller class.
@@ -109,31 +115,30 @@ public class SignupController implements Initializable {
     @FXML
     private void Signup(ActionEvent event) {
         Window owner = btnsignup.getScene().getWindow();
-        if (!(tfcin.getText().chars().allMatch(Character::isDigit))) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Cin doit composé des chiffres seulement!");
-        } else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit))) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Le numéro de permis doit composé des chiffres seulement!");
-        } else if (!(tfnum_tel.getText().chars().allMatch(Character::isDigit))) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "Le numéro de téléphone doit composé des chiffres seulement!");
-        } else if (tfcin.getText().isEmpty() || tfnom.getText().isEmpty()
+        if (tfcin.getText().isEmpty() || tfnom.getText().isEmpty()
                 || tfprenom.getText().isEmpty() || tfemail.getText().isEmpty()
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
                 || tfemail.getText().isEmpty() || pfpassword.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vide!");
+        } else if (!(tfcin.getText().chars().allMatch(Character::isDigit)) || tfcin.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Cin doit etre composé seulement de 8 chiffres !");
+        } else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Le numéro de permis doit etre composé seulement de 8 chiffres !");
+        } else if (!(tfnum_tel.getText().chars().allMatch(Character::isDigit)) || tfnum_tel.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Le numéro de téléphone doit etre composé seulement de 8 chiffres !");
         } else if (user.getPhoto_permis().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo de votre permis!");
         } else if (user.getPhoto_personel().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
         } else if (!(validateEmail(tfemail))) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "La format d'email est incorrect!");
-        } else // if(tfnom!=""&&)
-        {
-            user.setNom(tfnom.getText());
         }
+
+        user.setNom(tfnom.getText());
         user.setPrenom(tfprenom.getText());
         user.setEmail(tfemail.getText());
         user.setCin(tfcin.getText());
@@ -154,7 +159,7 @@ public class SignupController implements Initializable {
         } else {
             uc.ajouterUtilisateur(user);
             infoBox("Utilisateur ajouté avec succé", null, "succé");
-            connectWindow(secondaryStage);
+            connectWindow(stage);
 
         }
 
@@ -166,26 +171,29 @@ public class SignupController implements Initializable {
         return matcher.matches();
     }
 
-    public void connectWindow(Stage secondaryStage) {
+    private Stage connectStage() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Signin.fxml"));
+
             Scene scene = new Scene(root);
-            secondaryStage.setTitle("Connecter");
-            secondaryStage.setScene(scene);
-            secondaryStage.show();
+            stage.setTitle("Connecter");
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+        return stage;
     }
 
-    private void Signin(ActionEvent event) {
-        User user = new User();
-        user.setEmail(tfemail.getText());
-        user.setPassword(pfpassword.getText());
-        UserCRUD uc = new UserCRUD();
-        if (uc.authentifier(user)) {
-            currentUser = new User(user.getEmail(), user.getPassword());
-        }
+    public void connectWindow(Stage stage) {
+        connectStage();
+    }
+
+    @FXML
+    private void dejacompte(ActionEvent event) {
+
+        connectStage();
+
     }
 
     public static void infoBox(String infoMessage, String headerText, String title) {
@@ -196,7 +204,7 @@ public class SignupController implements Initializable {
         alert.showAndWait();
     }
 
-    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

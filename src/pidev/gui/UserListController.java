@@ -5,24 +5,16 @@
  */
 package pidev.gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import static java.util.Collections.list;
 import java.util.List;
 import java.util.ResourceBundle;
-import static javafx.application.Application.launch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import pidev.entities.User;
 import pidev.services.UserCRUD;
 
@@ -34,7 +26,25 @@ import pidev.services.UserCRUD;
 public class UserListController implements Initializable {
 
     @FXML
-    private ListView<User> lvliste;
+    private TableView<User> tvliste;
+    @FXML
+    private TableColumn<User,String> ID;
+    @FXML
+    private TableColumn<User, String> Nom;
+    @FXML
+    private TableColumn<User, String> Prenom;
+    @FXML
+    private TableColumn<User, String> Email;
+    @FXML
+    private TableColumn<User, String> Cin;
+    @FXML
+    private TableColumn<User, String> date_naiss;
+    @FXML
+    private TableColumn<User, String> num_permis;
+    @FXML
+    private TableColumn<User, String> num_tel;
+    @FXML
+    private TableColumn<User, String> ville;
 
     /**
      * Initializes the controller class.
@@ -51,8 +61,9 @@ public class UserListController implements Initializable {
         UserCRUD uc = new UserCRUD();
         List<User> userList = new ArrayList<>(uc.consulterListe());
 
+
         ObservableList<User> users = FXCollections.observableList(userList);
-        lvliste.setItems(users);
+        
 
     }
 

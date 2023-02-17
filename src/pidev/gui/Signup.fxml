@@ -6,29 +6,39 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="514.0" prefWidth="778.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.gui.SignupController">
    <children>
-      <Label layoutX="51.0" layoutY="22.0" text="nom" />
-      <Label layoutX="43.0" layoutY="61.0" text="prenom" />
-      <Label layoutX="51.0" layoutY="100.0" text="email" />
-      <Label layoutX="57.0" layoutY="129.0" text="password" />
-      <Label layoutX="53.0" layoutY="192.0" text="date_naissance" />
-      <Label layoutX="63.0" layoutY="232.0" text="num_permi" />
-      <Label layoutX="75.0" layoutY="303.0" text="ville" />
-      <TextField fx:id="tfnom" layoutX="200.0" layoutY="22.0" />
-      <TextField fx:id="tfprenom" layoutX="191.0" layoutY="66.0" />
-      <DatePicker fx:id="date_naissance" layoutX="201.0" layoutY="188.0" />
-      <TextField fx:id="tfnum_permi" layoutX="200.0" layoutY="228.0" />
-      <TextField fx:id="tfnum_tel" layoutX="201.0" layoutY="261.0" />
-      <Label layoutX="64.0" layoutY="265.0" text="num_tel" />
-      <TextField fx:id="tfville" layoutX="191.0" layoutY="299.0" />
-      <Button fx:id="btnsignup" layoutX="268.0" layoutY="431.0" mnemonicParsing="false" onAction="#Signup" text="Signup" />
-      <Button fx:id="btnphoto_personnel" layoutX="107.0" layoutY="382.0" mnemonicParsing="false" onAction="#PhotoPersonnel" text="Enregistrer photo personnel " />
-      <Button fx:id="btnphoto_permi" layoutX="349.0" layoutY="382.0" mnemonicParsing="false" onAction="#PhotoPermis" text="Enregistrer photo de permis" />
-      <TextField fx:id="tfcin" layoutX="201.0" layoutY="159.0" />
-      <Label layoutX="75.0" layoutY="163.0" text="cin" />
-      <PasswordField fx:id="pfpassword" layoutX="200.0" layoutY="125.0" />
-      <TextField fx:id="tfemail" layoutX="201.0" layoutY="96.0" />
+      <Button fx:id="btnsignup" layoutX="331.0" layoutY="422.0" mnemonicParsing="false" onAction="#Signup" text="Crée un compte" />
+      <Button fx:id="btnphoto_personnel" layoutX="121.0" layoutY="382.0" mnemonicParsing="false" onAction="#PhotoPersonnel" text="Enregistrer photo personnel " />
+      <Button fx:id="btnphoto_permi" layoutX="449.0" layoutY="382.0" mnemonicParsing="false" onAction="#PhotoPermis" text="Enregistrer photo de permis" />
+      <Button layoutX="350.0" layoutY="462.0" mnemonicParsing="false" onAction="#dejacompte" text="Connecter" />
+      <VBox layoutX="226.0" layoutY="16.0" prefHeight="316.0" prefWidth="326.0" spacing="10.0">
+         <children>
+            <TextField fx:id="tfnom" />
+            <TextField fx:id="tfprenom" />
+            <TextField fx:id="tfemail" />
+            <PasswordField fx:id="pfpassword" />
+            <TextField fx:id="tfcin" />
+            <DatePicker fx:id="date_naissance" />
+            <TextField fx:id="tfnum_permi" />
+            <TextField fx:id="tfnum_tel" />
+            <TextField fx:id="tfville" />
+         </children>
+      </VBox>
+      <VBox layoutX="117.0" layoutY="21.0" prefHeight="359.0" prefWidth="100.0" spacing="20.0">
+         <children>
+            <Label text="nom" />
+            <Label text="prenom" />
+            <Label text="email" />
+            <Label text="password" />
+            <Label text="cin" />
+            <Label text="date_naissance" />
+            <Label text="num_permi" />
+            <Label text="num_tel" />
+            <Label text="ville" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
