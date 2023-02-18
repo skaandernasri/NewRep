@@ -24,5 +24,6 @@
       <Label layoutX="300.0" layoutY="645.0" scaleX="3.0" scaleY="3.0" text="Num_permis :" />
       <Label layoutX="412.0" layoutY="700.0" scaleX="3.0" scaleY="3.0" text="Ville :" />
       <Label layoutX="425.0" layoutY="762.0" scaleX="3.0" scaleY="3.0" text="Cin :" />
+      <Button fx:id="btnlogout" layoutX="833.0" layoutY="816.0" mnemonicParsing="false" onAction="#Déconnecter" prefHeight="25.0" prefWidth="120.0" text="Déconnecter" />
    </children>
 </AnchorPane>

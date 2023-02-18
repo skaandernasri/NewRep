@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,6 +53,8 @@ public class ProfileController implements Initializable {
     private Label cin;
     @FXML
     private Button btnmodifierprofile;
+    @FXML
+    private Button btnlogout;
 
     /**
      * Initializes the controller class.
@@ -97,6 +97,21 @@ public class ProfileController implements Initializable {
             System.out.println(ex.getMessage());
         }
         return stage;
+    }
+    @FXML
+    private void Déconnecter(ActionEvent event){
+         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
+            Parent root = loader.load();
+            SigninController sc = loader.getController();
+            Stage stage = (Stage) btnlogout.getScene().getWindow();
+            stage.close();
+            sc.connectWindow();
+            UserSession.cleanUserSession();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    
     }
     @FXML
    private void updateScreen(ActionEvent event){

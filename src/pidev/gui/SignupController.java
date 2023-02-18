@@ -12,8 +12,6 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

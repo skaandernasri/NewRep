@@ -8,8 +8,6 @@ package pidev.gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -43,7 +41,6 @@ public class SigninController implements Initializable {
     @FXML
     private Button btnsignin;
     User user = new User();
-    private User currentUser;
     UpdateUserController updateusercontroller = new UpdateUserController();
     @FXML
     private Button btndejacompte;
@@ -90,17 +87,16 @@ public class SigninController implements Initializable {
                 System.out.println(ex.getMessage());
             }
                }
-               else {
+               else if(uc.getUserByEmail(tfemailtoconnect.getText()).getRole().equals(Role.valueOf("ADMIN"))) {
                  try {
-                     FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateUser.fxml"));
+                     FXMLLoader loader = new FXMLLoader(getClass().getResource("UserList.fxml"));
                      Parent root = loader.load();
-                     ProfileController uuc = loader.getController();
-                     uuc.profile();
-                     
+                     UserListController uuc = loader.getController();
+                     uuc.userListWindow();
                      Stage stage = (Stage) btnsignin.getScene().getWindow();
                      stage.close();
                  } catch (IOException ex) {
-                     Logger.getLogger(SigninController.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex.getMessage());
                  }
 
                } } else {
@@ -139,13 +135,14 @@ public class SigninController implements Initializable {
         }
         return stage;
     }
-     @FXML
+      @FXML
     private void dejacompte(ActionEvent event) {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Signup.fxml"));
             Parent root = loader.load();
             SignupController sc = loader.getController();
+            sc.signUpWindow();
             Stage stage = (Stage) btndejacompte.getScene().getWindow();
             stage.close();
             sc.signUpWindow();

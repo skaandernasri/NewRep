@@ -4,9 +4,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="406.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.gui.UserListController">
+<AnchorPane id="AnchorPane" prefHeight="592.0" prefWidth="917.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.gui.UserListController">
    <children>
-      <TableView fx:id="tvliste" layoutX="3.0" prefHeight="406.0" prefWidth="682.0">
+      <TableView fx:id="tvliste" layoutX="-2.0" prefHeight="592.0" prefWidth="727.0">
         <columns>
           <TableColumn fx:id="ID" prefWidth="75.0" text="ID" />
           <TableColumn fx:id="Nom" prefWidth="75.0" text="Nom" />

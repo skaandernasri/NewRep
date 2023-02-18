@@ -5,6 +5,7 @@
  */
 package pidev.gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -14,9 +15,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 import pidev.entities.User;
 import pidev.services.UserCRUD;
@@ -49,7 +54,7 @@ public class UserListController implements Initializable {
     private TableColumn<User, String> num_tel;
     @FXML
     private TableColumn<User, String> ville;
-
+Stage stage=new Stage();
 
     /**
      * Initializes the controller class.
@@ -75,5 +80,16 @@ public class UserListController implements Initializable {
         num_tel.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_tel()));
         ville.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getVille()));
     }
-
-}
+ public Stage userListWindow() { try {
+            Parent root = FXMLLoader.load(getClass().getResource("UserList.fxml"));
+            Scene scene = new Scene(root);
+            stage.setTitle("Liste des utilisateurs");
+            stage.setScene(scene);
+            stage.show();
+             return stage;
+        } catch (IOException ex) {
+System.out.println(ex.getMessage());
+        }
+ return stage;
+ }
+ }
