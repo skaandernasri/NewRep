@@ -6,15 +6,18 @@
 package pidev.gui;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+
 import pidev.entities.User;
 import pidev.services.UserCRUD;
 
@@ -25,10 +28,11 @@ import pidev.services.UserCRUD;
  */
 public class UserListController implements Initializable {
 
+    
     @FXML
     private TableView<User> tvliste;
     @FXML
-    private TableColumn<User,String> ID;
+    private TableColumn<User, Integer> ID;
     @FXML
     private TableColumn<User, String> Nom;
     @FXML
@@ -46,6 +50,7 @@ public class UserListController implements Initializable {
     @FXML
     private TableColumn<User, String> ville;
 
+
     /**
      * Initializes the controller class.
      */
@@ -57,14 +62,18 @@ public class UserListController implements Initializable {
     }
 
     public void userList() {
-
         UserCRUD uc = new UserCRUD();
-        List<User> userList = new ArrayList<>(uc.consulterListe());
-
-
-        ObservableList<User> users = FXCollections.observableList(userList);
-        
-
+        ObservableList<User> users = FXCollections.observableArrayList(uc.consulterListe());
+        tvliste.setItems(users);
+        ID.setCellValueFactory(cellData ->new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        Nom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
+       Prenom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
+        Email.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrenom()));
+        Cin.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCin()));
+        date_naiss.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate_naiss()));
+        num_permis.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_permis()));
+        num_tel.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_tel()));
+        ville.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getVille()));
     }
 
 }

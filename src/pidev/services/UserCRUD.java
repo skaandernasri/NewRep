@@ -20,13 +20,14 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import pidev.entities.Role;
 import pidev.entities.User;
+import pidev.entities.User.Role;
 import pidev.gui.SignupController;
 import pidev.interfaces.InterfaceCRUD;
 import pidev.utils.Connexion;
@@ -50,14 +51,15 @@ public class UserCRUD implements InterfaceCRUD<User> {
             pst.setString(2, u.getPrenom());
             pst.setString(3, u.getCin());
             pst.setString(4, u.getDate_naiss());
-            pst.setString(10, u.getPhoto_personel());
-            pst.setString(11, u.getPhoto_permis());
             pst.setString(5, u.getNum_permis());
             pst.setString(6, u.getVille());
             pst.setString(7, u.getNum_tel());
-            pst.setString(12, u.getRole().toString());
             pst.setString(8, u.getEmail());
             pst.setString(9, u.getPassword());
+            pst.setString(10, u.getPhoto_personel());
+            pst.setString(11, u.getPhoto_permis());
+            pst.setString(12, u.getRole().toString());
+
             pst.executeUpdate();
             System.out.println("Done!");
         } catch (SQLException ex) {
@@ -68,43 +70,49 @@ public class UserCRUD implements InterfaceCRUD<User> {
     @Override
     public void supprimerUtilisateur(User t) {
         try {
-            String requete = "SELECT id from utilisateur where login=" + "'" + t.getEmail() + "'";
-            Statement st = Connexion.getInstance().getCnx().createStatement();
-            ResultSet rs = st.executeQuery(requete);
-            if (rs.next()) {
-                String requete1 = "DELETE from utilisateur where  id= " + "'" + rs.getInt(1) + "'";
-                Statement pst = Connexion.getInstance().getCnx().createStatement();
-                pst.executeUpdate(requete);
-            }
+
+            String requete = "DELETE from utilisateur where id = " + "'" + t.getId() + "'";
+            Statement pst = Connexion.getInstance().getCnx().createStatement();
+            pst.executeUpdate(requete);
+            System.out.println("Done!");
         } catch (SQLException ex) {
-            Logger.getLogger(UserCRUD.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         }
 
     }
 
     @Override
-    public void modifierUtilisateur(User t) {
+    public boolean modifierUtilisateur(User t) {
+int test=0;
         try {
-            String requete = "UPDATE utilisateur SET  login= " + "'" + t.getEmail() + "'"
-                    + "mdp=" + "'" + t.getPassword() + "'"
-                    + "num_tel" + "'" + t.getNum_tel() + "'"
-                    + "nom" + "'" + t.getNom() + "'"
-                    + "prenom" + "'" + t.getPrenom() + "'"
-                    + "ville" + "'" + t.getVille() + "'";
-            Statement st = Connexion.getInstance().getCnx().createStatement();
-            st.executeUpdate(requete);
+            String requete = "UPDATE utilisateur SET login ='"+t.getEmail()+"'"
+            + ", mdp ='"+t.getPassword()+"' , num_tel = '"+t.getNum_tel()+"', nom = '"+t.getNom()+"',"
+                    + " prenom = '"+t.getPrenom()+"', ville = '"+t.getVille()+"' WHERE id = '"+t.getId()+"'";
+            PreparedStatement pst = Connexion.getInstance().getCnx().prepareStatement(requete);
+            /*pst.setString(1, t.getEmail());
+            pst.setString(2, t.getPassword());
+            pst.setString(3, t.getNum_tel());
+            pst.setString(4, t.getNom());
+            pst.setString(5, t.getPrenom());
+            pst.setString(6, t.getVille());
+            pst.setInt(7, t.getId());*/
+            test=pst.executeUpdate(requete);
+            
+            //System.out.println("Done!");
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+return test==1;
     }
 
     @Override
     public List<User> consulterListe() {
         List<User> myList = new ArrayList<>();
-        String requete = "SELECT id,nom,prenom,cin,date_naiss,num_permis,ville,num_tel,login FROM utilisateur where role = " + "'" + "client" + "'";
+        String requete = "SELECT id,nom,prenom,cin,date_naiss,num_permis,ville,num_tel,login FROM utilisateur where role = " + "'" + "CLIENT" + "'";
         try {
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
+            System.out.println("Done!");
             while (rs.next()) {
                 User u = new User();
                 u.setId(rs.getInt(1));
@@ -140,7 +148,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
     }
 
     @Override
-    public boolean CindejaUtilise(User t) {
+    public boolean cindejaUtilise(User t) {
         boolean test = false;
         try {
             String requete = "SELECT * from utilisateur where cin = " + "'" + t.getCin() + "'";
@@ -176,6 +184,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
+            System.out.println("Done!");
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -183,10 +192,10 @@ public class UserCRUD implements InterfaceCRUD<User> {
     }
 
     @Override
-    public User getUserByEmail(User t) {
+    public User getUserByEmail(String Email) {
         User u = new User();
         try {
-            String requete = "SELECT id,nom,prenom,cin,num_permis,ville,num_tel,login,mdp FROM utilisateur where login = " + "'" + t.getEmail() + "'";
+            String requete = "SELECT id,nom,prenom,cin,num_permis,ville,num_tel,login,mdp,role,photo_personel,photo_permis FROM utilisateur where login = " + "'" + Email + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             while (rs.next()) {
@@ -199,8 +208,10 @@ public class UserCRUD implements InterfaceCRUD<User> {
                 u.setNum_tel(rs.getNString(7));
                 u.setEmail(rs.getNString(8));
                 u.setPassword(rs.getNString(9));
-                // u.setRole(rs.getObject(9, role));
-
+                u.setRole(Role.valueOf(rs.getNString(10)));
+                u.setPhoto_personel(rs.getNString(11));
+                u.setPhoto_permis(rs.getNString(12));
+                System.out.println("Done!");
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -210,7 +221,10 @@ public class UserCRUD implements InterfaceCRUD<User> {
 
     @Override
     public void uploadPhotoPersonnel(User t) throws IOException {
-        File dossierDest = new File("C:/Users/skann/OneDrive/Documents/NetBeansProjectsm/swift_ride/UploadFileLocation/PhotoPersonnel");
+        File dossierDest = new File("PhotoPersonnel");
+        if (!dossierDest.exists()) {
+            dossierDest.mkdirs();
+        }
         JFileChooser image_upload = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
         image_upload.setFileFilter(filter);
@@ -221,7 +235,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
             try {
                 input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
                 File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
-                 output = Files.newOutputStream(imagedesination.toPath());
+                output = Files.newOutputStream(imagedesination.toPath());
                 byte[] buffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = input.read(buffer)) != -1) {
@@ -230,18 +244,20 @@ public class UserCRUD implements InterfaceCRUD<User> {
                 t.setPhoto_personel(imagedesination.toPath().toString());
             } catch (FileNotFoundException ex) {
                 System.out.println(ex.getMessage());
-           
-            } 
-                    input.close();
-                                   output.close();
 
             }
+            input.close();
+            output.close();
+
         }
-    
+    }
 
     @Override
-    public void uploadPhotoPermis(User t)  throws IOException {
-         File dossierDest = new File("C:/Users/skann/OneDrive/Documents/NetBeansProjectsm/swift_ride/UploadFileLocation/PhotoPermis");
+    public void uploadPhotoPermis(User t) throws IOException {
+        File dossierDest = new File("PhotoPermis");
+        if (!dossierDest.exists()) {
+            dossierDest.mkdirs();
+        }
         JFileChooser image_upload = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
         image_upload.setFileFilter(filter);
@@ -252,7 +268,7 @@ public class UserCRUD implements InterfaceCRUD<User> {
             try {
                 input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
                 File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
-                 output = Files.newOutputStream(imagedesination.toPath());
+                output = Files.newOutputStream(imagedesination.toPath());
                 byte[] buffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = input.read(buffer)) != -1) {
@@ -261,12 +277,12 @@ public class UserCRUD implements InterfaceCRUD<User> {
                 t.setPhoto_permis(imagedesination.toPath().toString());
             } catch (FileNotFoundException ex) {
                 System.out.println(ex.getMessage());
-           
-            } 
-                    input.close();
-                                   output.close();
 
             }
+            input.close();
+            output.close();
+
         }
+    }
 
 }

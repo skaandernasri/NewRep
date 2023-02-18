@@ -5,21 +5,16 @@
  */
 package pidev.gui;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
 import java.net.URL;
-import java.nio.file.Files;
-import java.text.SimpleDateFormat;
+
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -36,10 +31,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import pidev.entities.Role;
+
 import pidev.entities.User;
+import pidev.entities.User.Role;
 import pidev.services.UserCRUD;
 
 /**
@@ -55,8 +49,6 @@ public class SignupController implements Initializable {
     private TextField tfprenom;
     @FXML
     private TextField tfemail;
-    @FXML
-    private TextField tfemailtoconnect;
     @FXML
     private PasswordField pfpassword;
     @FXML
@@ -75,13 +67,12 @@ public class SignupController implements Initializable {
     private Button btnphoto_permi;
     @FXML
     private Button btnsignup;
-    @FXML
-    private Button btnsignin;
-    @FXML
-    private PasswordField pfpasswordtoconnect;
     User user = new User();
-    private User currentUser;
+
     Stage stage = new Stage();
+    
+    @FXML
+    private Button btndeja_compte;
 
     /**
      * Initializes the controller class.
@@ -99,28 +90,45 @@ public class SignupController implements Initializable {
             uc.uploadPhotoPersonnel(user);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
+
         }
     }
 
     @FXML
     private void PhotoPermis(ActionEvent event) {
+
         try {
             UserCRUD uc = new UserCRUD();
             uc.uploadPhotoPermis(user);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+
+    }
+   public Stage signUpWindow(){
+           
+
+          try {
+            Parent root = FXMLLoader.load(getClass().getResource("Signup.fxml"));
+            Scene scene = new Scene(root);
+            stage.setTitle("Crée un compte");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+System.out.println(ex.getMessage());
+        }
+          return stage;
     }
 
     @FXML
-    private void Signup(ActionEvent event) {
+    private void signup(ActionEvent event) {
         Window owner = btnsignup.getScene().getWindow();
         if (tfcin.getText().isEmpty() || tfnom.getText().isEmpty()
                 || tfprenom.getText().isEmpty() || tfemail.getText().isEmpty()
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
                 || tfemail.getText().isEmpty() || pfpassword.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vide!");
+            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vides!");
         } else if (!(tfcin.getText().chars().allMatch(Character::isDigit)) || tfcin.getText().length() != 8) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Cin doit etre composé seulement de 8 chiffres !");
@@ -132,8 +140,8 @@ public class SignupController implements Initializable {
                     "Le numéro de téléphone doit etre composé seulement de 8 chiffres !");
         } else if (user.getPhoto_permis().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo de votre permis!");
-        } else if (user.getPhoto_personel().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
+            // } else if (btnphoto_personnel.gete) {
+            //   showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
         } else if (!(validateEmail(tfemail))) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "La format d'email est incorrect!");
         }
@@ -152,14 +160,25 @@ public class SignupController implements Initializable {
         UserCRUD uc = new UserCRUD();
         if (uc.emaildejaUtilise(user)) {
             infoBox("Email deja utilisé", null, "Echec");
-        } else if (uc.CindejaUtilise(user)) {
+        } else if (uc.cindejaUtilise(user)) {
             infoBox("Cin déja utilisé", null, "Echec");
         } else if (uc.num_permidejaUtilise(user)) {
             infoBox("numéro de permis déja utilisé", null, "Echec");
         } else {
-            uc.ajouterUtilisateur(user);
-            infoBox("Utilisateur ajouté avec succé", null, "succé");
-            connectWindow(stage);
+            try {
+                uc.ajouterUtilisateur(user);
+                infoBox("Utilisateur ajouté avec succé", null, "succé");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
+                Parent root = loader.load();
+                SigninController sc = loader.getController();
+                Stage stage = (Stage) btndeja_compte.getScene().getWindow();
+                stage.close();
+                sc.getConnectStage();
+                // siginincontroller.getConnectStage();
+
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
 
         }
 
@@ -171,28 +190,19 @@ public class SignupController implements Initializable {
         return matcher.matches();
     }
 
-    private Stage connectStage() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("Signin.fxml"));
-
-            Scene scene = new Scene(root);
-            stage.setTitle("Connecter");
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return stage;
-    }
-
-    public void connectWindow(Stage stage) {
-        connectStage();
-    }
-
     @FXML
     private void dejacompte(ActionEvent event) {
 
-        connectStage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
+            Parent root = loader.load();
+            SigninController sc = loader.getController();
+            Stage stage = (Stage) btndeja_compte.getScene().getWindow();
+            stage.close();
+            sc.getConnectStage();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
 
     }
 
@@ -211,10 +221,6 @@ public class SignupController implements Initializable {
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
-    }
-
-    public User getCurrentUser() {
-        return this.currentUser;
     }
 
 }

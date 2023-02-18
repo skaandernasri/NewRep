@@ -10,6 +10,8 @@ import javafx.scene.control.Alert;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import pidev.entities.User;
 import pidev.services.UserCRUD;
+import pidev.utils.UserSession;
 
 /**
  * FXML Controller class
@@ -50,55 +53,100 @@ public class UpdateUserController implements Initializable {
     private PasswordField pfnew_password;
     @FXML
     private Button btvalider;
-private User currentUser;
-Alert.AlertType  alertType;
+    private User currentUser = new User();
+    Alert.AlertType alertType;
+    Stage stage = new Stage();
+    @FXML
+    private Button btndelete;
+//    SigninController signincontroller=new SigninController();
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+         UserCRUD uc = new UserCRUD();
+        User user = uc.getUserByEmail(UserSession.getEmail());
+            tfnom.setText(user.getNom());   
+            tfprenom.setText(user.getPrenom());  
+            tfemail.setText(user.getEmail());
+            tfville.setText(user.getVille());   
+            tfnum_tel.setText(user.getNum_tel());
+            pfpassword.setText(user.getPassword());
+            pfnew_password.setText(user.getPassword());
+    }
+
+    public Stage getUpdateWindowStage() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("UpdateUser.fxml"));
+            Scene scene = new Scene(root);
+            stage.setTitle("Modifier");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return stage;
+    }
 
     @FXML
     private void modifier(ActionEvent event) {
-        Window owner= btvalider.getScene().getWindow();
-        
-        UserCRUD uc= new UserCRUD();
-      User user =  uc.getUserByEmail(getCurrentUser());
-     if (tfnom.getText().isEmpty())
-      tfnom.setText(user.getNom());
-     if(tfprenom.getText().isEmpty())
-         tfnom.setText(user.getNom());
-     if(tfemail.getText().isEmpty())
-         tfemail.setText(user.getEmail());
-     if(tfville.getText().isEmpty())
-         tfville.setText(user.getVille());
-     if(tfnum_tel.getText().isEmpty())
-         tfnum_tel.setText(user.getNum_tel());
-     if(pfpassword.getText().isEmpty()&&pfnew_password.getText().isEmpty()){
-         pfpassword.setText(user.getPassword());
-         pfnew_password.setText(user.getPassword());
-     }
-     if(!(pfpassword.getText().equals(pfnew_password.getText())))
-         showAlert(alertType.ERROR,owner,"Erreur","Mot passe incorrect");
-    else {
-      user.setNom(tfnom.getText().toString());
-      user.setPrenom(tfprenom.getText().toString());
-      user.setEmail(tfemail.getText().toString());
-      user.setVille(tfville.getText().toString());
-      user.setNum_tel(tfnum_tel.getText().toString());
-      user.setPassword(pfnew_password.getText().toString());
-      uc.modifierUtilisateur(user);
-    }
-    }
-     public void delete(ActionEvent event){
+        Window owner = btvalider.getScene().getWindow();
         UserCRUD uc = new UserCRUD();
-        if(displayModalPopup("modifier", "utililsateur supprimer", "utililsateur non supprimer"));
-        uc.supprimerUtilisateur(getCurrentUser());
-            
+        User user = uc.getUserByEmail(UserSession.getEmail());
+            /*tfnom.setText(user.getNom());   
+            tfprenom.setText(user.getPrenom());  
+            tfemail.setText(user.getEmail());
+            tfville.setText(user.getVille());   
+            tfnum_tel.setText(user.getNum_tel());
+            pfpassword.setText(user.getPassword());
+            pfnew_password.setText(user.getPassword());*/
+        if (!(tfnum_tel.getText().chars().allMatch(Character::isDigit)) || tfnum_tel.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Le numéro de téléphone doit etre composé seulement de 8 chiffres !");
+        if (!(pfpassword.getText().equals(pfnew_password.getText()))) {
+            showAlert(alertType.ERROR, owner, "Erreur", "Mot de passe incorrect");
+        } else {
+            user.setNom(tfnom.getText().toString());
+            user.setPrenom(tfprenom.getText().toString());  
+            user.setEmail(tfemail.getText().toString());
+            user.setVille(tfville.getText().toString());
+            user.setNum_tel(tfnum_tel.getText().toString());
+            user.setPassword(pfnew_password.getText().toString());
+            uc.modifierUtilisateur(user);
+            UserSession.updateUserSession(user.getEmail(), user.getPassword());
+            System.out.println(user);
+        }
     }
-     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    }
+
+    @FXML
+    private void delete(ActionEvent event) {
+        UserCRUD uc = new UserCRUD();
+        if (displayModalPopup("Supprimer", "utililsateur supprimer", "utililsateur non supprimer"));
+        {
+           
+            try {
+                User user = uc.getUserByEmail(UserSession.getEmail());
+                uc.supprimerUtilisateur(user);
+                UserSession.cleanUserSession();
+                FXMLLoader loader= new FXMLLoader(getClass().getResource("Signup.fxml"));
+                Parent root =loader.load();
+                SignupController sc=loader.getController();
+                sc.signUpWindow();
+                Stage stage = (Stage) btndelete.getScene().getWindow();
+                stage.close();
+            } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            }
+               
+            
+
+        }
+
+    }
+
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -106,25 +154,19 @@ Alert.AlertType  alertType;
         alert.initOwner(owner);
         alert.show();
     }
-public User getCurrentUser(){
-    return this.currentUser;
-}
-public boolean displayModalPopup(String message, String yesmessage, String nomessage) {
-	Alert alert = new Alert(AlertType.CONFIRMATION);
-	alert.setTitle("Supprimer");
-	alert.setContentText("");
-        
 
-	Optional<ButtonType> result = alert.showAndWait();
-	if (result.get() == ButtonType.OK)
-		return true;
-	return false;
-}
-    
-     public void setCurrentUser(User currentUser) {
-        this.currentUser=currentUser;
+    public boolean displayModalPopup(String message, String yesmessage, String nomessage) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Supprimer");
+        alert.setContentText("");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            return true;
+        }
+        return false;
     }
-     /*private Stage updateWindowStage(Stage stage) {
+    /*private Stage updateWindowStage(Stage stage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("UpdateUser.fxml"));
             Scene scene = new Scene(root);
@@ -139,6 +181,5 @@ public boolean displayModalPopup(String message, String yesmessage, String nomes
       public void updateWindow(Stage stage) {
         updateWindowStage(stage);
     }*/
-     
-    
+
 }

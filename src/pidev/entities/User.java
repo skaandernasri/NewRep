@@ -61,8 +61,13 @@ public class User {
         this.num_permis = num_permis;
         this.ville = ville;
         this.num_tel = num_tel;
-      
         this.email = email;
+    }
+
+   
+   
+    public User(String i) {
+        this.nom = i;
     }
 
    
@@ -174,12 +179,15 @@ public String getDate_naiss(){
 public void setDate_naiss(String date_naiss){
     this.date_naiss=date_naiss;
 }
+   public enum Role {
+ADMIN,CLIENT,NULL
+}
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", cin=" + cin + ", date_naiss=" + date_naiss + ", num_permis=" + num_permis + ", ville=" + ville + ", num_tel=" + num_tel + ", role=" + role + ", email=" + email + '}';
     }
 
-   
+
 
     
     

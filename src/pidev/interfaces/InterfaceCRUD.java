@@ -16,14 +16,14 @@ import pidev.entities.User;
 public interface InterfaceCRUD<T> {
      public void ajouterUtilisateur(T t);
      public void supprimerUtilisateur(T t);
-     public void modifierUtilisateur(T t);
+     public boolean modifierUtilisateur(T t);
      public boolean emaildejaUtilise(T t);
-     public boolean CindejaUtilise(T t);
+     public boolean cindejaUtilise(T t);
      public boolean num_permidejaUtilise(T t);
      public void uploadPhotoPersonnel(T t) throws IOException;
      public void uploadPhotoPermis(T t) throws IOException;
      public boolean authentifier(T t);
     public List<T> consulterListe();
-    public User getUserByEmail(T t);
+    public User getUserByEmail(String s);
    
 }

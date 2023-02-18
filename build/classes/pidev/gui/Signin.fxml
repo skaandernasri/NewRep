@@ -13,5 +13,6 @@
       <Label layoutX="73.0" layoutY="204.0" text="Password" />
       <PasswordField fx:id="pfpasswordtoconnect" layoutX="226.0" layoutY="200.0" />
       <Button fx:id="btnsignin" layoutX="264.0" layoutY="277.0" mnemonicParsing="false" onAction="#Signin" text="Connecter" />
+      <Button fx:id="btndejacompte" layoutX="249.0" layoutY="325.0" mnemonicParsing="false" onAction="#dejacompte" prefHeight="25.0" prefWidth="104.0" text="Crée un compte" />
    </children>
 </AnchorPane>

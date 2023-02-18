@@ -8,6 +8,8 @@ package pidev.gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -23,7 +25,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pidev.entities.User;
+import pidev.entities.User.Role;
 import pidev.services.UserCRUD;
+import pidev.utils.UserSession;
 
 /**
  * FXML Controller class
@@ -40,7 +44,9 @@ public class SigninController implements Initializable {
     private Button btnsignin;
     User user = new User();
     private User currentUser;
-    Stage stage = new Stage();
+    UpdateUserController updateusercontroller = new UpdateUserController();
+    @FXML
+    private Button btndejacompte;
 
     /**
      * Initializes the controller class.
@@ -64,35 +70,45 @@ public class SigninController implements Initializable {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "Vérifier l'email");
             return;
         } else if (uc.authentifier(user)) {
+            // UserSession.getInstace(user.getEmail(), user.getPassword());
+               if (uc.getUserByEmail(tfemailtoconnect.getText()).getRole().equals(Role.valueOf("CLIENT"))){
+            try {
+                   UserSession.getInstace(user.getEmail(), user.getPassword());
+                //setCurrentUser(uc.getUserByEmail(user));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
+                Parent root = loader.load();
+                ProfileController uuc = loader.getController();
+                uuc.profile();
+              
+                Stage stage = (Stage) btnsignin.getScene().getWindow();
+                stage.close();
+                //uuc.setCurrentUser(getCurrentUser());
 
-            currentUser = new User(user.getEmail(), user.getPassword());
-           FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateUser.fxml"));
-            UpdateUserController uuc = loader.getController();
-            uuc.setCurrentUser(currentUser);
-            updateWindow(stage);
+                // updateusercontroller.setCurrentUser(getCurrentUser());
+                // updateusercontroller.getUpdateWindowStage();
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+               }
+               else {
+                 try {
+                     FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateUser.fxml"));
+                     Parent root = loader.load();
+                     ProfileController uuc = loader.getController();
+                     uuc.profile();
+                     
+                     Stage stage = (Stage) btnsignin.getScene().getWindow();
+                     stage.close();
+                 } catch (IOException ex) {
+                     Logger.getLogger(SigninController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
 
-        }
-        else
+               } } else {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "Compte introuvable");
-
-    }
-
-   
- private Stage updateWindowStage(Stage stage) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("UpdateUser.fxml"));
-            Scene scene = new Scene(root);
-            stage.setTitle("Modifier");
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
         }
-        return stage;
+
     }
-      public void updateWindow(Stage stage) {
-        updateWindowStage(stage);
-    }
+
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -106,5 +122,40 @@ public class SigninController implements Initializable {
         Pattern pattern = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
         Matcher matcher = pattern.matcher(email.getText());
         return matcher.matches();
+    }
+
+    public Stage getConnectStage() {
+        Stage stage = new Stage();
+
+        try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("Signin.fxml"));
+            Scene scene = new Scene(root);
+            stage.setTitle("Connecter");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return stage;
+    }
+     @FXML
+    private void dejacompte(ActionEvent event) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Signup.fxml"));
+            Parent root = loader.load();
+            SignupController sc = loader.getController();
+            Stage stage = (Stage) btndejacompte.getScene().getWindow();
+            stage.close();
+            sc.signUpWindow();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+
+    public void connectWindow() {
+        getConnectStage();
     }
 }
