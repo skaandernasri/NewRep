@@ -52,6 +52,7 @@ package pidev.utils;
     public static void cleanUserSession() {
         Email = null;
        password=null;
+       instance=null;
     }
     public static void updateUserSession(String Email, String password){
          instance = new UserSession(Email, password);

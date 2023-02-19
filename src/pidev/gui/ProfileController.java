@@ -55,12 +55,16 @@ public class ProfileController implements Initializable {
     private Button btnmodifierprofile;
     @FXML
     private Button btnlogout;
-
+    @FXML
+    private Button btnconsulterliste;
+UserCRUD uc=new UserCRUD();
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        if((uc.getUserByEmail(UserSession.getEmail()).getRole().equals(User.Role.valueOf("CLIENT"))))
+            btnconsulterliste.setVisible(false);
         InputStream stream = null;
         InputStream stream1 = null;
         try {
@@ -85,7 +89,7 @@ public class ProfileController implements Initializable {
 
     }
 
-    public Stage profile() {
+    public Stage profileWindow() {
         Stage stage = new Stage();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Profile.fxml"));
@@ -101,13 +105,13 @@ public class ProfileController implements Initializable {
     @FXML
     private void Déconnecter(ActionEvent event){
          try {
+             UserSession.cleanUserSession(); 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
             Parent root = loader.load();
             SigninController sc = loader.getController();
             Stage stage = (Stage) btnlogout.getScene().getWindow();
             stage.close();
             sc.connectWindow();
-            UserSession.cleanUserSession();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -122,6 +126,19 @@ public class ProfileController implements Initializable {
             Stage stage = (Stage) btnmodifierprofile.getScene().getWindow();
             stage.close();
             uuc.getUpdateWindowStage();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+   }
+   @FXML
+   private void consulterliste(ActionEvent event){
+         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserList.fxml"));
+            Parent root = loader.load();
+            UserListController ulc = loader.getController();
+            Stage stage = (Stage) btnconsulterliste.getScene().getWindow();
+            stage.close();
+            ulc.userListWindow();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

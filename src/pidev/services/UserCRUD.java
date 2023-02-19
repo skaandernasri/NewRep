@@ -228,11 +228,12 @@ return test==1;
         JFileChooser image_upload = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
         image_upload.setFileFilter(filter);
+        image_upload.setAcceptAllFileFilterUsed(false);
         int res = image_upload.showSaveDialog(null);
         if (res == JFileChooser.APPROVE_OPTION) {
             InputStream input = null;
             OutputStream output = null;
-            try {
+           
                 input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
                 File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
                 output = Files.newOutputStream(imagedesination.toPath());
@@ -242,10 +243,7 @@ return test==1;
                     output.write(buffer, 0, bytesRead);
                 }
                 t.setPhoto_personel(imagedesination.toPath().toString());
-            } catch (FileNotFoundException ex) {
-                System.out.println(ex.getMessage());
-
-            }
+             
             input.close();
             output.close();
 
@@ -261,11 +259,12 @@ return test==1;
         JFileChooser image_upload = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
         image_upload.setFileFilter(filter);
+        image_upload.setAcceptAllFileFilterUsed(false);
         int res = image_upload.showSaveDialog(null);
         if (res == JFileChooser.APPROVE_OPTION) {
             InputStream input = null;
             OutputStream output = null;
-            try {
+            
                 input = new DataInputStream(new FileInputStream(image_upload.getSelectedFile()));
                 File imagedesination = new File(dossierDest, new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + image_upload.getSelectedFile().getName());
                 output = Files.newOutputStream(imagedesination.toPath());
@@ -275,14 +274,12 @@ return test==1;
                     output.write(buffer, 0, bytesRead);
                 }
                 t.setPhoto_permis(imagedesination.toPath().toString());
-            } catch (FileNotFoundException ex) {
-                System.out.println(ex.getMessage());
-
-            }
+            
             input.close();
             output.close();
 
         }
+     
     }
 
 }

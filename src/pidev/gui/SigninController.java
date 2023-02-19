@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import pidev.entities.User;
 import pidev.entities.User.Role;
+import static pidev.gui.SignupController.showAlert;
 import pidev.services.UserCRUD;
 import pidev.utils.UserSession;
 
@@ -74,8 +75,8 @@ public class SigninController implements Initializable {
                 //setCurrentUser(uc.getUserByEmail(user));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
                 Parent root = loader.load();
-                ProfileController uuc = loader.getController();
-                uuc.profile();
+                ProfileController pc = loader.getController();
+                pc.profileWindow();
               
                 Stage stage = (Stage) btnsignin.getScene().getWindow();
                 stage.close();
@@ -89,10 +90,11 @@ public class SigninController implements Initializable {
                }
                else if(uc.getUserByEmail(tfemailtoconnect.getText()).getRole().equals(Role.valueOf("ADMIN"))) {
                  try {
-                     FXMLLoader loader = new FXMLLoader(getClass().getResource("UserList.fxml"));
+                     UserSession.getInstace(user.getEmail(), user.getPassword());
+                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
                      Parent root = loader.load();
-                     UserListController uuc = loader.getController();
-                     uuc.userListWindow();
+                     ProfileController pc = loader.getController();
+                     pc.profileWindow();
                      Stage stage = (Stage) btnsignin.getScene().getWindow();
                      stage.close();
                  } catch (IOException ex) {
@@ -105,14 +107,7 @@ public class SigninController implements Initializable {
 
     }
 
-    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
-    }
+  
 
     public boolean validateEmail(TextField email) {
         Pattern pattern = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");

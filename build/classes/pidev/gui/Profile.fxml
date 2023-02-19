@@ -9,13 +9,13 @@
    <children>
       <ImageView fx:id="ivphoto_personnel" fitHeight="314.0" fitWidth="387.0" layoutX="65.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="ivphoto_permis" fitHeight="338.0" fitWidth="353.0" layoutX="809.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="nom" layoutX="570.0" layoutY="438.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="prenom" layoutX="570.0" layoutY="486.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="email" layoutX="570.0" layoutY="539.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="num_tel" layoutX="570.0" layoutY="596.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="num_permis" layoutX="570.0" layoutY="645.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="Ville" layoutX="570.0" layoutY="700.0" scaleX="3.0" scaleY="3.0" text="Label" />
-      <Label fx:id="cin" layoutX="570.0" layoutY="762.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="nom" layoutX="647.0" layoutY="440.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="prenom" layoutX="647.0" layoutY="490.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="email" layoutX="647.0" layoutY="539.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="num_tel" layoutX="647.0" layoutY="596.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="num_permis" layoutX="647.0" layoutY="645.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="Ville" layoutX="647.0" layoutY="700.0" scaleX="3.0" scaleY="3.0" text="Label" />
+      <Label fx:id="cin" layoutX="647.0" layoutY="762.0" scaleX="3.0" scaleY="3.0" text="Label" />
       <Button fx:id="btnmodifierprofile" layoutX="526.0" layoutY="816.0" mnemonicParsing="false" onAction="#updateScreen" text="Modifier Profile" />
       <Label layoutX="366.0" layoutY="486.0" scaleX="3.0" scaleY="3.0" text="Prenom :" />
       <Label layoutX="399.0" layoutY="439.0" scaleX="3.0" scaleY="3.0" text="Nom :" />
@@ -25,5 +25,6 @@
       <Label layoutX="412.0" layoutY="700.0" scaleX="3.0" scaleY="3.0" text="Ville :" />
       <Label layoutX="425.0" layoutY="762.0" scaleX="3.0" scaleY="3.0" text="Cin :" />
       <Button fx:id="btnlogout" layoutX="833.0" layoutY="816.0" mnemonicParsing="false" onAction="#Déconnecter" prefHeight="25.0" prefWidth="120.0" text="Déconnecter" />
+      <Button fx:id="btnconsulterliste" layoutX="110.0" layoutY="816.0" mnemonicParsing="false" onAction="#consulterliste" prefHeight="25.0" prefWidth="194.0" text="Consulter liste des utilisateur" />
    </children>
 </AnchorPane>

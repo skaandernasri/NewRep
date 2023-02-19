@@ -8,23 +8,28 @@ package pidev.gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import pidev.entities.User;
 import pidev.services.UserCRUD;
+import pidev.utils.UserSession;
 
 /**
  * FXML Controller class
@@ -54,7 +59,8 @@ public class UserListController implements Initializable {
     private TableColumn<User, String> num_tel;
     @FXML
     private TableColumn<User, String> ville;
-Stage stage=new Stage();
+    @FXML
+    private Button btnprofile;
 
     /**
      * Initializes the controller class.
@@ -80,16 +86,33 @@ Stage stage=new Stage();
         num_tel.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_tel()));
         ville.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getVille()));
     }
- public Stage userListWindow() { try {
+ public Stage userListWindow() { 
+     Stage stage = new Stage();
+     try {
+     
             Parent root = FXMLLoader.load(getClass().getResource("UserList.fxml"));
             Scene scene = new Scene(root);
             stage.setTitle("Liste des utilisateurs");
             stage.setScene(scene);
             stage.show();
-             return stage;
         } catch (IOException ex) {
 System.out.println(ex.getMessage());
         }
  return stage;
+ }
+ @FXML
+ public void profileWindow(ActionEvent event){
+          
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
+            
+            Parent root = loader.load();
+            ProfileController pc = loader.getController();
+            pc.profileWindow();
+            Stage stage = (Stage) btnprofile.getScene().getWindow();
+                     stage.close();
+        } catch (IOException ex) {
+System.out.println(ex.getMessage());
+        }
  }
  }

@@ -8,6 +8,7 @@ package pidev.gui;
 import java.io.IOException;
 
 import java.net.URL;
+import java.time.LocalDate;
 
 import java.time.format.DateTimeFormatter;
 
@@ -24,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -68,7 +70,7 @@ public class SignupController implements Initializable {
     User user = new User();
 
     Stage stage = new Stage();
-    
+
     @FXML
     private Button btndeja_compte;
 
@@ -78,6 +80,20 @@ public class SignupController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        date_naissance.setValue(LocalDate.now().minusYears(18));
+        date_naissance.setDayCellFactory(picker -> {
+    final LocalDate today = LocalDate.now();
+    return new DateCell() {
+        @Override
+        public void updateItem(LocalDate item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item.getYear() > today.minusYears(18).getYear()||(item.getYear()==today.minusYears(18).getYear()&&item.getDayOfYear()>today.getDayOfYear())) {
+                setDisable(true);
+                setStyle("-fx-background-color: #ffc0cb;");
+            }
+        }
+    };
+});
     }
 
     @FXML
@@ -95,27 +111,30 @@ public class SignupController implements Initializable {
     @FXML
     private void PhotoPermis(ActionEvent event) {
 
+
         try {
             UserCRUD uc = new UserCRUD();
             uc.uploadPhotoPermis(user);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
+ 
+
         }
 
     }
-   public Stage signUpWindow(){
-           
 
-          try {
+    public Stage signUpWindow() {
+
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("Signup.fxml"));
             Scene scene = new Scene(root);
             stage.setTitle("Crée un compte");
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
-System.out.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         }
-          return stage;
+        return stage;
     }
 
     @FXML
@@ -126,22 +145,29 @@ System.out.println(ex.getMessage());
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
                 || tfemail.getText().isEmpty() || pfpassword.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "il reste un ou des champs vides!");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "il reste un ou des champs vides!");
+        } else if (pfpassword.getText().length() < 6) {
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+                    "Le mot de passe doit etre composé de six chiffre au minimum");
         } else if (!(tfcin.getText().chars().allMatch(Character::isDigit)) || tfcin.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
                     "Cin doit etre composé seulement de 8 chiffres !");
-        } else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+        }  else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+                    "Le numéro de permis doit etre composé seulement de 8 chiffres !");
+        }
+        else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le numéro de permis doit etre composé seulement de 8 chiffres !");
         } else if (!(tfnum_tel.getText().chars().allMatch(Character::isDigit)) || tfnum_tel.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le numéro de téléphone doit etre composé seulement de 8 chiffres !");
         } else if (user.getPhoto_permis().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo de votre permis!");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "vous devez enregistrez une photo de votre permis!");
             // } else if (btnphoto_personnel.gete) {
             //   showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
         } else if (!(validateEmail(tfemail))) {
-            showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "La format d'email est incorrect!");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "La format d'email est incorrect!");
         }
 
         user.setNom(tfnom.getText());
@@ -157,15 +183,15 @@ System.out.println(ex.getMessage());
         user.setPassword(pfpassword.getText());
         UserCRUD uc = new UserCRUD();
         if (uc.emaildejaUtilise(user)) {
-            infoBox("Email deja utilisé", null, "Echec");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "Email deja utilisé");
         } else if (uc.cindejaUtilise(user)) {
-            infoBox("Cin déja utilisé", null, "Echec");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "Cin déja utilisé");
         } else if (uc.num_permidejaUtilise(user)) {
-            infoBox("numéro de permis déja utilisé", null, "Echec");
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "numéro de permis déja utilisé");
         } else {
             try {
                 uc.ajouterUtilisateur(user);
-                infoBox("Utilisateur ajouté avec succé", null, "succé");
+                showAlert(Alert.AlertType.ERROR, owner, "Succés", "Utilisateur ajouté avec succès");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
                 Parent root = loader.load();
                 SigninController sc = loader.getController();
@@ -204,15 +230,7 @@ System.out.println(ex.getMessage());
 
     }
 
-    public static void infoBox(String infoMessage, String headerText, String title) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setContentText(infoMessage);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.showAndWait();
-    }
-
-    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

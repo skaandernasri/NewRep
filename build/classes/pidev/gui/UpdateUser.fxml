@@ -9,8 +9,8 @@
 
 <AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="766.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.gui.UpdateUserController">
    <children>
-      <Button fx:id="btvalider" layoutX="413.0" layoutY="363.0" mnemonicParsing="false" onAction="#modifier" text="Valider" />
-      <Button fx:id="btndelete" layoutX="375.0" layoutY="405.0" mnemonicParsing="false" onAction="#delete" text="Supprimer compte" />
+      <Button fx:id="btvalider" layoutX="411.0" layoutY="332.0" mnemonicParsing="false" onAction="#modifier" text="Valider" />
+      <Button fx:id="btndelete" layoutX="380.0" layoutY="368.0" mnemonicParsing="false" onAction="#delete" text="Supprimer compte" />
       <VBox layoutX="293.0" layoutY="59.0" prefHeight="285.0" prefWidth="307.0" spacing="10.0">
          <children>
             <TextField fx:id="tfnom" />
@@ -33,5 +33,6 @@
             <Label text="Numéro téléphone" />
          </children>
       </VBox>
+      <Button fx:id="btnprofile" layoutX="412.0" layoutY="409.0" mnemonicParsing="false" onAction="#profileWindow" text="Profile" />
    </children>
 </AnchorPane>
