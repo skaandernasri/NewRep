@@ -17,9 +17,9 @@ public interface InterfaceCRUD<T> {
      public void ajouterUtilisateur(T t);
      public void supprimerUtilisateur(T t);
      public boolean modifierUtilisateur(T t);
-     public boolean emaildejaUtilise(T t);
-     public boolean cindejaUtilise(T t);
-     public boolean num_permidejaUtilise(T t);
+     public boolean emaildejaUtilise(String email);
+     public boolean cindejaUtilise(String  cin);
+     public boolean num_permidejaUtilise(String num);
      public void uploadPhotoPersonnel(T t) throws IOException;
      public void uploadPhotoPermis(T t) throws IOException;
      public boolean authentifier(T t);

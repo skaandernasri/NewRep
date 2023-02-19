@@ -70,7 +70,7 @@ public class SignupController implements Initializable {
     User user = new User();
 
     Stage stage = new Stage();
-
+ UserCRUD uc = new UserCRUD();
     @FXML
     private Button btndeja_compte;
 
@@ -100,7 +100,6 @@ public class SignupController implements Initializable {
     private void PhotoPersonnel(ActionEvent event) {
 
         try {
-            UserCRUD uc = new UserCRUD();
             uc.uploadPhotoPersonnel(user);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -113,7 +112,6 @@ public class SignupController implements Initializable {
 
 
         try {
-            UserCRUD uc = new UserCRUD();
             uc.uploadPhotoPermis(user);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -145,32 +143,48 @@ public class SignupController implements Initializable {
                 || date_naissance.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).isEmpty() || tfnum_permi.getText().isEmpty()
                 || tfville.getText().isEmpty() || tfnum_tel.getText().isEmpty()
                 || tfemail.getText().isEmpty() || pfpassword.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "il reste un ou des champs vides!");
-        } else if (pfpassword.getText().length() < 6) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "il reste un ou des champs vides!");
+        }else if (!(validateEmail(tfemail))){
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "La format de l'email est incorrect!");
+        }
+        else if (pfpassword.getText().length() < 6) {
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le mot de passe doit etre composé de six chiffre au minimum");
         } else if (!(tfcin.getText().chars().allMatch(Character::isDigit)) || tfcin.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!",
                     "Cin doit etre composé seulement de 8 chiffres !");
         }  else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le numéro de permis doit etre composé seulement de 8 chiffres !");
         }
         else if (!(tfnum_permi.getText().chars().allMatch(Character::isDigit)) || tfnum_permi.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le numéro de permis doit etre composé seulement de 8 chiffres !");
         } else if (!(tfnum_tel.getText().chars().allMatch(Character::isDigit)) || tfnum_tel.getText().length() != 8) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!",
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!",
                     "Le numéro de téléphone doit etre composé seulement de 8 chiffres !");
-        } else if (user.getPhoto_permis().isEmpty()) {
+            
+        }  else if (!(validateEmail(tfemail))) {
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "La format d'email est incorrect!");
+        }
+
+        
+       
+       else if (uc.emaildejaUtilise(tfemail.getText())) {
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "Email deja utilisé");
+        } else if (uc.cindejaUtilise(tfcin.getText())) {
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "Cin déja utilisé");
+        } else if (uc.num_permidejaUtilise(tfnum_permi.getText())) {
+            showAlert1(Alert.AlertType.ERROR, owner, "Echec!", "numéro de permis déja utilisé");
+        }else if (user.getPhoto_personel().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "vous devez enregistrez une photo personnel!");
+             }else if (user.getPhoto_permis().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Echec!", "vous devez enregistrez une photo de votre permis!");
             // } else if (btnphoto_personnel.gete) {
             //   showAlert(Alert.AlertType.ERROR, owner, "Form Echec!", "vous devez enregistrez une photo personnelle!");
-        } else if (!(validateEmail(tfemail))) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "La format d'email est incorrect!");
-        }
-
-        user.setNom(tfnom.getText());
+        } else {
+            try {
+                user.setNom(tfnom.getText());
         user.setPrenom(tfprenom.getText());
         user.setEmail(tfemail.getText());
         user.setCin(tfcin.getText());
@@ -181,15 +195,6 @@ public class SignupController implements Initializable {
         user.setRole(Role.CLIENT);
         user.setEmail(tfemail.getText());
         user.setPassword(pfpassword.getText());
-        UserCRUD uc = new UserCRUD();
-        if (uc.emaildejaUtilise(user)) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "Email deja utilisé");
-        } else if (uc.cindejaUtilise(user)) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "Cin déja utilisé");
-        } else if (uc.num_permidejaUtilise(user)) {
-            showAlert(Alert.AlertType.ERROR, owner, "Echec!", "numéro de permis déja utilisé");
-        } else {
-            try {
                 uc.ajouterUtilisateur(user);
                 showAlert(Alert.AlertType.ERROR, owner, "Succés", "Utilisateur ajouté avec succès");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Signin.fxml"));
@@ -208,7 +213,7 @@ public class SignupController implements Initializable {
 
     }
 
-    public boolean validateEmail(TextField email) {
+    public static boolean validateEmail(TextField email) {
         Pattern pattern = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
         Matcher matcher = pattern.matcher(email.getText());
         return matcher.matches();
@@ -229,7 +234,14 @@ public class SignupController implements Initializable {
         }
 
     }
-
+  public void showAlert1(Alert.AlertType alertType, Window owner, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner);
+        alert.show();
+    }
     public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

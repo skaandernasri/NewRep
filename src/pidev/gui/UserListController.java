@@ -126,5 +126,6 @@ public class UserListController implements Initializable {
         UserCRUD uc = new UserCRUD();
         uc.supprimerUtilisateur(tvliste.getSelectionModel().getSelectedItem());
         tvliste.getItems().removeAll(tvliste.getSelectionModel().getSelectedItem());
+        
     }
 }

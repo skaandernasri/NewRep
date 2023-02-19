@@ -134,10 +134,10 @@ return test==1;
     }
 
     @Override
-    public boolean emaildejaUtilise(User t) {
+    public boolean emaildejaUtilise(String t) {
         boolean test = false;
         try {
-            String requete = "SELECT * from utilisateur where login = " + "'" + t.getEmail() + "'";
+            String requete = "SELECT * from utilisateur where login = " + "'" + t + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -148,10 +148,10 @@ return test==1;
     }
 
     @Override
-    public boolean cindejaUtilise(User t) {
+    public boolean cindejaUtilise(String t) {
         boolean test = false;
         try {
-            String requete = "SELECT * from utilisateur where cin = " + "'" + t.getCin() + "'";
+            String requete = "SELECT * from utilisateur where cin = " + "'" + t + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -162,10 +162,10 @@ return test==1;
     }
 
     @Override
-    public boolean num_permidejaUtilise(User t) {
+    public boolean num_permidejaUtilise(String t) {
         boolean test = false;
         try {
-            String requete = "SELECT * from utilisateur where num_permis = " + "'" + t.getNum_permis() + "'";
+            String requete = "SELECT * from utilisateur where num_permis = " + "'" + t + "'";
             Statement st = Connexion.getInstance().getCnx().createStatement();
             ResultSet rs = st.executeQuery(requete);
             test = rs.next();
@@ -248,6 +248,7 @@ return test==1;
             output.close();
 
         }
+       
     }
 
     @Override
@@ -279,7 +280,7 @@ return test==1;
             output.close();
 
         }
-     
+    
     }
 
 }
