@@ -38,7 +38,6 @@ import pidev.utils.UserSession;
  */
 public class UserListController implements Initializable {
 
-    
     @FXML
     private TableView<User> tvliste;
     @FXML
@@ -61,58 +60,71 @@ public class UserListController implements Initializable {
     private TableColumn<User, String> ville;
     @FXML
     private Button btnprofile;
+    @FXML
+    private Button bndelete;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         userList();
-
+      /*  if ((tvliste.getSelectionModel().getSelectedItems().isEmpty())) 
+            bndelete.setDisable(true);
+      */  
     }
 
-    public void userList() {
+    private void userList() {
         UserCRUD uc = new UserCRUD();
         ObservableList<User> users = FXCollections.observableArrayList(uc.consulterListe());
         tvliste.setItems(users);
-        ID.setCellValueFactory(cellData ->new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        ID.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         Nom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
-       Prenom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
+        Prenom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
         Email.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrenom()));
         Cin.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCin()));
         date_naiss.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate_naiss()));
         num_permis.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_permis()));
         num_tel.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNum_tel()));
         ville.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getVille()));
+
     }
- public Stage userListWindow() { 
-     Stage stage = new Stage();
-     try {
-     
+
+    public Stage userListWindow() {
+        Stage stage = new Stage();
+        try {
+
             Parent root = FXMLLoader.load(getClass().getResource("UserList.fxml"));
             Scene scene = new Scene(root);
             stage.setTitle("Liste des utilisateurs");
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
-System.out.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         }
- return stage;
- }
- @FXML
- public void profileWindow(ActionEvent event){
-          
+        return stage;
+    }
+
+    @FXML
+    private void profileWindow(ActionEvent event) {
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
-            
+
             Parent root = loader.load();
             ProfileController pc = loader.getController();
             pc.profileWindow();
             Stage stage = (Stage) btnprofile.getScene().getWindow();
-                     stage.close();
+            stage.close();
         } catch (IOException ex) {
-System.out.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         }
- }
- }
+    }
+
+    @FXML
+    private void deleteRow(ActionEvent event) {
+        UserCRUD uc = new UserCRUD();
+        uc.supprimerUtilisateur(tvliste.getSelectionModel().getSelectedItem());
+        tvliste.getItems().removeAll(tvliste.getSelectionModel().getSelectedItem());
+    }
+}

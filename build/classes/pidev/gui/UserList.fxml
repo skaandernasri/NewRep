@@ -7,19 +7,20 @@
 
 <AnchorPane id="AnchorPane" prefHeight="592.0" prefWidth="917.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.gui.UserListController">
    <children>
-      <TableView fx:id="tvliste" layoutX="-2.0" prefHeight="592.0" prefWidth="727.0">
+      <TableView fx:id="tvliste" prefHeight="592.0" prefWidth="771.0">
         <columns>
           <TableColumn fx:id="ID" prefWidth="75.0" text="ID" />
           <TableColumn fx:id="Nom" prefWidth="75.0" text="Nom" />
             <TableColumn fx:id="Prenom" prefWidth="75.0" text="Prenom" />
             <TableColumn fx:id="Email" prefWidth="75.0" text="Email" />
-            <TableColumn fx:id="Cin" prefWidth="75.0" text="Cin" />
-            <TableColumn fx:id="date_naiss" prefWidth="75.0" text="date_naissance" />
-            <TableColumn fx:id="num_permis" prefWidth="75.0" text="num_permis" />
-            <TableColumn fx:id="num_tel" prefWidth="75.0" text="num_tel" />
-            <TableColumn fx:id="ville" prefWidth="75.0" text="ville" />
+            <TableColumn fx:id="Cin" prefWidth="54.0" text="Cin" />
+            <TableColumn fx:id="date_naiss" prefWidth="144.0" text="date_naissance" />
+            <TableColumn fx:id="num_permis" prefWidth="111.0" text="num_permis" />
+            <TableColumn fx:id="num_tel" prefWidth="88.0" text="num_tel" />
+            <TableColumn fx:id="ville" prefWidth="72.0" text="ville" />
         </columns>
       </TableView>
-      <Button fx:id="btnprofile" layoutX="793.0" layoutY="271.0" mnemonicParsing="false" onAction="#profileWindow" text="Profile" />
+      <Button fx:id="btnprofile" layoutX="818.0" layoutY="264.0" mnemonicParsing="false" onAction="#profileWindow" text="Profile" />
+      <Button fx:id="bndelete" cache="true" layoutX="808.0" layoutY="203.0" mnemonicParsing="false" onAction="#deleteRow" text="supprimer" textAlignment="CENTER" />
    </children>
 </AnchorPane>
